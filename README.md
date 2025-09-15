@@ -24,7 +24,7 @@ kibo-sandbox-data initEnv
 export:
   KIBO_CLIENT_ID: ******************
   KIBO_SHARED_SECRET: *************
-  KIBO_API_BASE_URL: https://home.mozu.com
+  KIBO_API_BASE_URL: https://*****.sandbox.mozu.com
   KIBO_TENANT: ******
   KIBO_SITE_ID: ****
   KIBO_MASTER_CATALOG_ID: 1
@@ -33,7 +33,7 @@ export:
 import:
   KIBO_CLIENT_ID: ******************
   KIBO_SHARED_SECRET: *************
-  KIBO_API_BASE_URL: https://home.mozu.com
+  KIBO_API_BASE_URL: https://*****.sandbox.mozu.com/
   KIBO_TENANT: ******
   KIBO_SITE_ID: ****
   KIBO_MASTER_CATALOG_ID: 1
