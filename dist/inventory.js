@@ -21,6 +21,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+//Start: ECM-42
+const fs = require("fs");
+const path = require("path");
+const { parse } = require("csv-parse/sync");
+//End: ECM-42
+
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.seedInventory = exports.importAllInventory = exports.exportAllInventory = void 0;
 const path_1 = __importDefault(require("path"));
@@ -152,6 +158,8 @@ async function exportAllInventory() {
 }
 exports.exportAllInventory = exportAllInventory;
 async function importAllInventory() {
+    //Start: ECM-42
+    convertCsvToJson();//End: ECM-42
     initClients();
     let dataStream = (0, utilites_1.createJsonLFileStream)(inventoryFilePath);
     const inventoryBatch = new InventoryBatch();
@@ -237,3 +245,37 @@ async function seedInventory() {
 }
 exports.seedInventory = seedInventory;
 //# sourceMappingURL=inventory.js.map
+
+//Start: ECM-42
+function convertCsvToJson(){
+
+const csvFile = path.resolve(__dirname, "../ProductsInventory.csv");
+const outputDir = path.resolve(__dirname, "../data");
+const outputFile = path.join(outputDir, "inventory.jsonl");
+const parse = require('csv-parse/sync');
+
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
+const input = fs.readFileSync(csvFile, 'utf8');
+ const cleanInput = input.replace(/^\uFEFF/, '');
+ const records = parse.parse(cleanInput, {
+  columns: true,
+  delimiter: ',',
+  skip_empty_lines: true
+});
+
+const inventoryProducts = records.map((r) => ({
+  locationCode: r.LocationID,
+  upc: r.ProductID,
+  onHand: r.Quantity
+}));
+
+// Write JSON file
+const ndjson = inventoryProducts.map((loc) => JSON.stringify(loc)).join("\n");
+fs.writeFileSync(outputFile, ndjson);
+
+console.log(`✅ Converted ${records.length} inventoryProducts`);
+console.log(`➡️  Output written to: ${outputFile}`);
+}
